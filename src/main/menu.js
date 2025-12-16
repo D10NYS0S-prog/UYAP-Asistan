@@ -128,86 +128,208 @@ function createApplicationMenu(mainWindow, store) {
               label: 'Dosya Ara',
               accelerator: 'CmdOrCtrl+F',
               click: async () => {
-                // Execute search dialog in the page
-                await mainWindow.webContents.executeJavaScript(`
-                  (function() {
-                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.openEvrakAra) {
-                      UYAP_EXT.DIALOG.openEvrakAra.default(null, [], 'search');
-                    } else {
-                      alert('Lütfen önce UYAP portalına giriş yapın ve bir dosya sayfasını yükleyin.');
-                    }
-                  })();
-                `).catch(err => {
+                const url = mainWindow.webContents.getURL();
+                const activeUser = store.get('active_user', null);
+                
+                // Check if on UYAP portal
+                if (!/avukatbeta\.uyap\.gov\.tr/.test(url)) {
                   dialog.showMessageBox(mainWindow, {
-                    type: 'error',
-                    title: 'Hata',
-                    message: 'Dosya arama özelliği şu anda kullanılamıyor.\n\nLütfen UYAP portalına giriş yapın.',
+                    type: 'warning',
+                    title: 'Uyarı',
+                    message: 'Bu özelliği kullanmak için UYAP Avukat Portalına gitmelisiniz.\n\nPortal menüsünden Avukat Portalı\'nı seçin.',
                     buttons: ['Tamam']
                   });
-                });
+                  return;
+                }
+                
+                // Check if user is logged in
+                if (!activeUser) {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'warning',
+                    title: 'Giriş Gerekli',
+                    message: 'Bu özelliği kullanmak için önce UYAP portalına giriş yapmalısınız.',
+                    buttons: ['Tamam']
+                  });
+                  return;
+                }
+                
+                // Execute search dialog in the page
+                const result = await mainWindow.webContents.executeJavaScript(`
+                  (function() {
+                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.openEvrakAra) {
+                      try {
+                        UYAP_EXT.DIALOG.openEvrakAra.default(null, [], 'search');
+                        return { success: true };
+                      } catch (e) {
+                        return { success: false, error: e.message };
+                      }
+                    } else {
+                      return { success: false, error: 'UYAP_EXT not loaded' };
+                    }
+                  })();
+                `).catch(err => ({ success: false, error: err.message }));
+                
+                if (!result.success) {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'info',
+                    title: 'Bilgi',
+                    message: 'Dosya arama özelliği henüz yüklenmedi.\n\nBir dosya sayfasına girin ve tekrar deneyin.',
+                    buttons: ['Tamam']
+                  });
+                }
               }
             },
             {
               label: 'Dosyalarım',
               click: async () => {
-                await mainWindow.webContents.executeJavaScript(`
-                  (function() {
-                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.dosyalarim) {
-                      UYAP_EXT.DIALOG.dosyalarim.default();
-                    } else {
-                      alert('Lütfen önce UYAP portalına giriş yapın.');
-                    }
-                  })();
-                `).catch(err => {
+                const url = mainWindow.webContents.getURL();
+                const activeUser = store.get('active_user', null);
+                
+                if (!/avukatbeta\.uyap\.gov\.tr/.test(url)) {
                   dialog.showMessageBox(mainWindow, {
-                    type: 'error',
-                    title: 'Hata',
-                    message: 'Dosyalarım özelliği şu anda kullanılamıyor.\n\nLütfen UYAP portalına giriş yapın.',
+                    type: 'warning',
+                    title: 'Uyarı',
+                    message: 'Bu özelliği kullanmak için UYAP Avukat Portalına gitmelisiniz.',
                     buttons: ['Tamam']
                   });
-                });
+                  return;
+                }
+                
+                if (!activeUser) {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'warning',
+                    title: 'Giriş Gerekli',
+                    message: 'Bu özelliği kullanmak için önce UYAP portalına giriş yapmalısınız.',
+                    buttons: ['Tamam']
+                  });
+                  return;
+                }
+                
+                const result = await mainWindow.webContents.executeJavaScript(`
+                  (function() {
+                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.dosyalarim) {
+                      try {
+                        UYAP_EXT.DIALOG.dosyalarim.default();
+                        return { success: true };
+                      } catch (e) {
+                        return { success: false, error: e.message };
+                      }
+                    } else {
+                      return { success: false, error: 'UYAP_EXT not loaded' };
+                    }
+                  })();
+                `).catch(err => ({ success: false, error: err.message }));
+                
+                if (!result.success) {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'info',
+                    title: 'Bilgi',
+                    message: 'Dosyalarım özelliği henüz yüklenmedi.\n\nSayfayı yenileyin ve tekrar deneyin.',
+                    buttons: ['Tamam']
+                  });
+                }
               }
             },
             {
               label: 'Yeni Evraklar',
               click: async () => {
-                await mainWindow.webContents.executeJavaScript(`
-                  (function() {
-                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.yeniEvraklar) {
-                      UYAP_EXT.DIALOG.yeniEvraklar.default();
-                    } else {
-                      alert('Lütfen önce UYAP portalına giriş yapın.');
-                    }
-                  })();
-                `).catch(err => {
+                const url = mainWindow.webContents.getURL();
+                const activeUser = store.get('active_user', null);
+                
+                if (!/avukatbeta\.uyap\.gov\.tr/.test(url)) {
                   dialog.showMessageBox(mainWindow, {
-                    type: 'error',
-                    title: 'Hata',
-                    message: 'Yeni Evraklar özelliği şu anda kullanılamıyor.\n\nLütfen UYAP portalına giriş yapın.',
+                    type: 'warning',
+                    title: 'Uyarı',
+                    message: 'Bu özelliği kullanmak için UYAP Avukat Portalına gitmelisiniz.',
                     buttons: ['Tamam']
                   });
-                });
+                  return;
+                }
+                
+                if (!activeUser) {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'warning',
+                    title: 'Giriş Gerekli',
+                    message: 'Bu özelliği kullanmak için önce UYAP portalına giriş yapmalısınız.',
+                    buttons: ['Tamam']
+                  });
+                  return;
+                }
+                
+                const result = await mainWindow.webContents.executeJavaScript(`
+                  (function() {
+                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.yeniEvraklar) {
+                      try {
+                        UYAP_EXT.DIALOG.yeniEvraklar.default();
+                        return { success: true };
+                      } catch (e) {
+                        return { success: false, error: e.message };
+                      }
+                    } else {
+                      return { success: false, error: 'UYAP_EXT not loaded' };
+                    }
+                  })();
+                `).catch(err => ({ success: false, error: err.message }));
+                
+                if (!result.success) {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'info',
+                    title: 'Bilgi',
+                    message: 'Yeni Evraklar özelliği henüz yüklenmedi.\n\nSayfayı yenileyin ve tekrar deneyin.',
+                    buttons: ['Tamam']
+                  });
+                }
               }
             },
             {
               label: 'Yerel Dosya Arşivi',
               click: async () => {
-                await mainWindow.webContents.executeJavaScript(`
-                  (function() {
-                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.arsiv) {
-                      UYAP_EXT.DIALOG.arsiv.default();
-                    } else {
-                      alert('Lütfen önce UYAP portalına giriş yapın.');
-                    }
-                  })();
-                `).catch(err => {
+                const url = mainWindow.webContents.getURL();
+                const activeUser = store.get('active_user', null);
+                
+                if (!/avukatbeta\.uyap\.gov\.tr/.test(url)) {
                   dialog.showMessageBox(mainWindow, {
-                    type: 'error',
-                    title: 'Hata',
-                    message: 'Yerel Dosya Arşivi özelliği şu anda kullanılamıyor.\n\nLütfen UYAP portalına giriş yapın.',
+                    type: 'warning',
+                    title: 'Uyarı',
+                    message: 'Bu özelliği kullanmak için UYAP Avukat Portalına gitmelisiniz.',
                     buttons: ['Tamam']
                   });
-                });
+                  return;
+                }
+                
+                if (!activeUser) {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'warning',
+                    title: 'Giriş Gerekli',
+                    message: 'Bu özelliği kullanmak için önce UYAP portalına giriş yapmalısınız.',
+                    buttons: ['Tamam']
+                  });
+                  return;
+                }
+                
+                const result = await mainWindow.webContents.executeJavaScript(`
+                  (function() {
+                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.arsiv) {
+                      try {
+                        UYAP_EXT.DIALOG.arsiv.default();
+                        return { success: true };
+                      } catch (e) {
+                        return { success: false, error: e.message };
+                      }
+                    } else {
+                      return { success: false, error: 'UYAP_EXT not loaded' };
+                    }
+                  })();
+                `).catch(err => ({ success: false, error: err.message }));
+                
+                if (!result.success) {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'info',
+                    title: 'Bilgi',
+                    message: 'Yerel Dosya Arşivi özelliği henüz yüklenmedi.\n\nSayfayı yenileyin ve tekrar deneyin.',
+                    buttons: ['Tamam']
+                  });
+                }
               }
             },
             { type: 'separator' },
