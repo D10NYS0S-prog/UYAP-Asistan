@@ -20,6 +20,12 @@ function registerContentInjection(win) {
     const url = win.webContents.getURL();
     
     try {
+      // Always inject Chrome API shim first on UYAP portals
+      if (/uyap\.gov\.tr/.test(url)) {
+        await loadJS(win.webContents, 'chrome-api-shim.js');
+        console.log('Chrome API shim injected');
+      }
+
       if (/avukatbeta\.uyap\.gov\.tr/.test(url)) {
         console.log('Injecting scripts for avukatbeta portal...');
         
