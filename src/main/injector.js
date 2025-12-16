@@ -74,6 +74,9 @@ function registerContentInjection(win) {
         await loadJS(win.webContents, 'portal/main.js');
         await loadJS(win.webContents, 'portal/portal.js');
         
+        // Load popup injector to add İMEREK sidebar
+        await loadJS(win.webContents, 'portal/popup-injector.js');
+        
         console.log('Scripts injected successfully for avukatbeta');
         
         // Add debugging to check if UYAP_EXT is loaded
