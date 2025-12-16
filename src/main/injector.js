@@ -27,11 +27,10 @@ function registerContentInjection(win) {
         await loadCSS(win.webContents, 'portal/main.css');
         
         // JS (order matters)
-        // Note: Some libraries from lib/ folder are not yet included
-        // await loadJS(win.webContents, 'lib/jquery/jquery.min.js');
-        // await loadJS(win.webContents, 'lib/ua-parser-js/ua-parser.min.js');
-        // await loadJS(win.webContents, 'lib/xhook/xhook.js');
-        // await loadJS(win.webContents, 'lib/pdfjs/pdf.min.mjs'); // ES module - needs special handling
+        await loadJS(win.webContents, 'lib/jquery/jquery.min.js');
+        await loadJS(win.webContents, 'lib/ua-parser-js/ua-parser.min.js');
+        await loadJS(win.webContents, 'lib/xhook/xhook.js');
+        // Note: lib/pdfjs/pdf.min.mjs is an ES module and needs special handling
         await loadJS(win.webContents, 'portal/startup.js');
         await loadJS(win.webContents, 'portal/main.js');
         await loadJS(win.webContents, 'portal/portal.js');
@@ -44,7 +43,7 @@ function registerContentInjection(win) {
         // await loadCSS(win.webContents, 'bilirkisi/main.css');
         
         // JS
-        // await loadJS(win.webContents, 'lib/ua-parser-js/ua-parser.min.js');
+        await loadJS(win.webContents, 'lib/ua-parser-js/ua-parser.min.js');
         // Note: bilirkisi/portal.js not included in uploaded files
         
         console.log('Scripts injected successfully for bilirkisi');
@@ -55,8 +54,8 @@ function registerContentInjection(win) {
         await loadCSS(win.webContents, 'vatandas/vatandas.css');
         
         // JS
-        // await loadJS(win.webContents, 'lib/ua-parser-js/ua-parser.min.js');
-        // await loadJS(win.webContents, 'lib/pdfmake/pdfmake.min.js');
+        await loadJS(win.webContents, 'lib/ua-parser-js/ua-parser.min.js');
+        await loadJS(win.webContents, 'lib/pdfmake/pdfmake.min.js');
         await loadJS(win.webContents, 'vatandas/xhook.js');
         await loadJS(win.webContents, 'vatandas/inject.js');
         await loadJS(win.webContents, 'vatandas/uyap_vatandas.js');
