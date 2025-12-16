@@ -2,12 +2,16 @@
 (function() {
     'use strict';
     
-    // Check if popup already injected
-    if (document.getElementById('imerek-popup-sidebar')) {
-        return;
-    }
+    console.log('İMEREK Popup Injector: Script loaded');
     
-    console.log('İMEREK Popup Injector: Injecting popup sidebar...');
+    function injectPopup() {
+        // Check if popup already injected
+        if (document.getElementById('imerek-popup-sidebar')) {
+            console.log('İMEREK Popup Injector: Popup already exists');
+            return;
+        }
+        
+        console.log('İMEREK Popup Injector: Injecting popup sidebar...');
     
     // Create popup HTML structure
     const popupHTML = `
@@ -364,4 +368,15 @@
     });
     
     console.log('İMEREK Popup Injector: Popup sidebar injected successfully');
+    console.log('İMEREK Popup Injector: Toggle button should be visible on the right side');
+    }
+    
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+        console.log('İMEREK Popup Injector: Waiting for DOM...');
+        document.addEventListener('DOMContentLoaded', injectPopup);
+    } else {
+        console.log('İMEREK Popup Injector: DOM ready, injecting now');
+        injectPopup();
+    }
 })();
