@@ -193,6 +193,135 @@ ipcMain.handle('runtime-sendMessage', async (event, message) => {
     return { access_token: 'mock-token-' + Date.now() };
   }
   
+  // Handle database fetch requests
+  if (message.ask === 'database') {
+    try {
+      const response = await fetch(message.url, message.request);
+      const data = await response.text();
+      return {
+        status: response.status,
+        body: data
+      };
+    } catch (error) {
+      console.error('Database fetch error:', error);
+      return { error: error.message };
+    }
+  }
+  
+  // Handle tebligat tracking (PTT shipment tracking)
+  if (message.ask === 'tebligatCheck') {
+    try {
+      const response = await fetch('https://api.ptt.gov.tr/api/ShipmentTracking', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify([message.params.barkodNo.toString()])
+      });
+      const data = await response.text();
+      return data;
+    } catch (error) {
+      console.error('Tebligat check error:', error);
+      return { error: error.message };
+    }
+  }
+  
+  // Handle IMEREK backend requests (uyelik, check, kvkkCevabi, odemeBilgileri)
+  if (message.ask === 'check' || message.ask === 'uyelik' || message.ask === 'kvkkCevabi' || message.ask === 'odemeBilgileri') {
+    try {
+      const requestData = {
+        ...message,
+        params: {
+          ...message.params,
+          version: app.getVersion()
+        }
+      };
+      
+      const response = await fetch('https://uyap-extension-requests.imerek.com', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8'
+        },
+        body: JSON.stringify(requestData)
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('IMEREK backend error:', error);
+      return { error: error.message };
+    }
+  }
+  
+  // Handle file download requests
+  if (message.ask === 'downloadfile') {
+    const { dialog } = require('electron');
+    const fs = require('fs');
+    const path = require('path');
+    const https = require('https');
+    const http = require('http');
+    
+    try {
+      let savePath;
+      
+      if (message.fileDownload.saveAs) {
+        // Show save dialog
+        const result = await dialog.showSaveDialog(mainWindow, {
+          defaultPath: message.fileDownload.filename,
+          filters: [
+            { name: 'All Files', extensions: ['*'] }
+          ]
+        });
+        
+        if (result.canceled) {
+          return { error: 'Download canceled by user' };
+        }
+        savePath = result.filePath;
+      } else {
+        // Use downloads folder
+        const downloadsPath = app.getPath('downloads');
+        savePath = path.join(downloadsPath, message.fileDownload.filename);
+      }
+      
+      // Download the file
+      return new Promise((resolve, reject) => {
+        const file = fs.createWriteStream(savePath);
+        const protocol = message.fileDownload.url.startsWith('https') ? https : http;
+        
+        protocol.get(message.fileDownload.url, (response) => {
+          response.pipe(file);
+          
+          file.on('finish', () => {
+            file.close();
+            
+            // Delete if requested
+            if (message.fileDownload.deleteDownloaded) {
+              fs.unlinkSync(savePath);
+            }
+            
+            resolve({
+              state: { current: 'complete' },
+              filename: { current: savePath },
+              id: Date.now()
+            });
+          });
+        }).on('error', (err) => {
+          fs.unlink(savePath, () => {}); // Delete incomplete file
+          reject({ error: err.message });
+        });
+      });
+    } catch (error) {
+      console.error('Download error:', error);
+      return { error: error.message };
+    }
+  }
+  
+  // Handle show default folder
+  if (message.ask === 'showDefaultFolder') {
+    const { shell } = require('electron');
+    shell.openPath(app.getPath('downloads'));
+    return { success: true };
+  }
+  
   // Default response
   return { success: true };
 });
