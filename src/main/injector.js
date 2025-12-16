@@ -1,0 +1,72 @@
+const fs = require('fs');
+const path = require('path');
+
+function loadText(relPath) {
+  return fs.promises.readFile(path.join(__dirname, '..', 'extension', relPath), 'utf8');
+}
+
+function loadCSS(webContents, relPath) {
+  return loadText(relPath).then(css => webContents.insertCSS(css));
+}
+
+function loadJS(webContents, relPath) {
+  return loadText(relPath).then(js => webContents.executeJavaScript(js));
+}
+
+function registerContentInjection(win) {
+  win.webContents.on('did-frame-finish-load', async (_e, isMainFrame) => {
+    if (!isMainFrame) return;
+    
+    const url = win.webContents.getURL();
+    
+    try {
+      if (/avukatbeta\.uyap\.gov\.tr/.test(url)) {
+        console.log('Injecting scripts for avukatbeta portal...');
+        
+        // CSS
+        await loadCSS(win.webContents, 'portal/main.css');
+        
+        // JS (order matters)
+        // Note: Some libraries from lib/ folder are not yet included
+        // await loadJS(win.webContents, 'lib/jquery/jquery.min.js');
+        // await loadJS(win.webContents, 'lib/ua-parser-js/ua-parser.min.js');
+        // await loadJS(win.webContents, 'lib/xhook/xhook.js');
+        // await loadJS(win.webContents, 'lib/pdfjs/pdf.min.mjs'); // ES module - needs special handling
+        await loadJS(win.webContents, 'portal/startup.js');
+        await loadJS(win.webContents, 'portal/main.js');
+        await loadJS(win.webContents, 'portal/portal.js');
+        
+        console.log('Scripts injected successfully for avukatbeta');
+      } else if (/bilirkisi\.uyap\.gov\.tr/.test(url)) {
+        console.log('Injecting scripts for bilirkisi portal...');
+        
+        // CSS
+        // await loadCSS(win.webContents, 'bilirkisi/main.css');
+        
+        // JS
+        // await loadJS(win.webContents, 'lib/ua-parser-js/ua-parser.min.js');
+        // Note: bilirkisi/portal.js not included in uploaded files
+        
+        console.log('Scripts injected successfully for bilirkisi');
+      } else if (/vatandas\.uyap\.gov\.tr/.test(url)) {
+        console.log('Injecting scripts for vatandas portal...');
+        
+        // CSS
+        await loadCSS(win.webContents, 'vatandas/vatandas.css');
+        
+        // JS
+        // await loadJS(win.webContents, 'lib/ua-parser-js/ua-parser.min.js');
+        // await loadJS(win.webContents, 'lib/pdfmake/pdfmake.min.js');
+        await loadJS(win.webContents, 'vatandas/xhook.js');
+        await loadJS(win.webContents, 'vatandas/inject.js');
+        await loadJS(win.webContents, 'vatandas/uyap_vatandas.js');
+        
+        console.log('Scripts injected successfully for vatandas');
+      }
+    } catch (err) {
+      console.error('Inject error:', err);
+    }
+  });
+}
+
+module.exports = { registerContentInjection };
