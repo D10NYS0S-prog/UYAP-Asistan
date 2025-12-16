@@ -29,13 +29,22 @@ function registerContentInjection(win) {
       if (/avukatbeta\.uyap\.gov\.tr/.test(url)) {
         console.log('Injecting scripts for avukatbeta portal...');
         
-        // CSS
+        // CSS - Load all required stylesheets from manifest
+        await loadCSS(win.webContents, 'lib/jodit/jodit.min.css');
+        await loadCSS(win.webContents, 'lib/glightbox/glightbox.min.css');
+        await loadCSS(win.webContents, 'lib/sumoselect/sumoselect.min.css');
+        await loadCSS(win.webContents, 'lib/datatables/datatables.min.css');
+        await loadCSS(win.webContents, 'lib/pnotify/core/PNotify.css');
+        await loadCSS(win.webContents, 'lib/pnotify/core/BrightTheme.css');
+        await loadCSS(win.webContents, 'lib/animatecss/animate.css');
+        await loadCSS(win.webContents, 'lib/lightgallery/css/lightgallery-bundle.css');
         await loadCSS(win.webContents, 'portal/main.css');
         
         // JS (order matters)
         await loadJS(win.webContents, 'lib/jquery/jquery.min.js');
         await loadJS(win.webContents, 'lib/ua-parser-js/ua-parser.min.js');
         await loadJS(win.webContents, 'lib/xhook/xhook.js');
+        await loadJS(win.webContents, 'lib/glightbox/glightbox.min.js');
         // Note: lib/pdfjs/pdf.min.mjs is an ES module and needs special handling
         await loadJS(win.webContents, 'portal/startup.js');
         await loadJS(win.webContents, 'portal/main.js');

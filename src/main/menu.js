@@ -93,25 +93,31 @@ function createApplicationMenu(mainWindow, store) {
         {
           label: 'Kullanıcı Bilgileri',
           click: async () => {
-            const userData = store.get('active_user', null);
-            if (userData) {
-              const user = store.get(userData, {});
-              dialog.showMessageBox(mainWindow, {
-                type: 'info',
-                title: 'Kullanıcı Bilgileri',
-                message: `Aktif Kullanıcı\n\n` +
-                        `Ad Soyad: ${user.avukat_adi || 'Belirtilmemiş'} ${user.avukat_soyadi || ''}\n` +
-                        `Durum: ${store.get('extensionStatus', true) ? 'Aktif' : 'Durdurulmuş'}`,
-                buttons: ['Tamam']
-              });
+            const extensionStatus = store.get('extensionStatus', true);
+            const activeUser = store.get('active_user', null);
+            
+            let message = '';
+            if (activeUser && store.has(activeUser)) {
+              const user = store.get(activeUser, {});
+              message = `Aktif Kullanıcı\n\n` +
+                       `Ad Soyad: ${user.avukat_adi || 'Belirtilmemiş'} ${user.avukat_soyadi || ''}\n` +
+                       `Avukat ID: ${activeUser}\n` +
+                       `Asistan Durumu: ${extensionStatus ? 'Aktif' : 'Durdurulmuş'}`;
             } else {
-              dialog.showMessageBox(mainWindow, {
-                type: 'warning',
-                title: 'Kullanıcı Bilgileri',
-                message: 'Henüz giriş yapılmamış. UYAP portalına giriş yapın.',
-                buttons: ['Tamam']
-              });
+              message = `UYAP Asistan\n\n` +
+                       `Henüz UYAP portalına giriş yapılmamış.\n\n` +
+                       `Asistan Durumu: ${extensionStatus ? 'Aktif' : 'Durdurulmuş'}\n\n` +
+                       `Not: UYAP portalına giriş yaptıktan sonra,\n` +
+                       `eklenti özellikleri (dosya listesi, tebligat listesi, vb.)\n` +
+                       `portal sayfasında otomatik olarak görünecektir.`;
             }
+            
+            dialog.showMessageBox(mainWindow, {
+              type: activeUser ? 'info' : 'warning',
+              title: 'Kullanıcı Bilgileri',
+              message: message,
+              buttons: ['Tamam']
+            });
           }
         },
         { type: 'separator' },
@@ -165,6 +171,31 @@ function createApplicationMenu(mainWindow, store) {
     {
       label: 'Yardım',
       submenu: [
+        {
+          label: 'Özellikler Nasıl Kullanılır?',
+          click: () => {
+            dialog.showMessageBox(mainWindow, {
+              type: 'info',
+              title: 'UYAP Asistan Özellikleri',
+              message: 'UYAP Asistan Nasıl Kullanılır?\n\n' +
+                      '1. Portal Menüsünden bir UYAP portalını seçin\n' +
+                      '   (Avukat/Bilirkişi/Vatandaş)\n\n' +
+                      '2. UYAP portalına giriş yapın\n\n' +
+                      '3. Giriş yaptıktan sonra İMEREK özellikleri\n' +
+                      '   otomatik olarak sayfada görünecektir:\n\n' +
+                      '   • Evrak Listesi butonu (📋)\n' +
+                      '   • Tebligat Listesi butonu (✉️)\n' +
+                      '   • Not Al butonu (📝)\n' +
+                      '   • Notlar butonu (📑)\n\n' +
+                      '4. Bu butonlar dosya detay sayfalarında\n' +
+                      '   otomatik olarak eklenir\n\n' +
+                      '5. Asistan Menüsünden asistanı\n' +
+                      '   etkinleştir/durdur yapabilirsiniz',
+              buttons: ['Tamam']
+            });
+          }
+        },
+        { type: 'separator' },
         {
           label: 'UYAP Asistan Hakkında',
           click: () => {
