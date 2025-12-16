@@ -4,11 +4,28 @@ UYAP Asistan, İMEREK Chrome eklentisinden dönüştürülmüş bir masaüstü u
 
 ## Özellikler
 
-- Avukat Portalı (avukatbeta.uyap.gov.tr) desteği
-- Bilirkişi Portalı (bilirkisi.uyap.gov.tr) desteği
-- Vatandaş Portalı (vatandas.uyap.gov.tr) desteği
-- Otomatik içerik enjeksiyonu
-- Chrome API'lerinin Electron'a uyumlu hale getirilmesi
+- **Çoklu Portal Desteği**
+  - Avukat Portalı (avukatbeta.uyap.gov.tr)
+  - Bilirkişi Portalı (bilirkisi.uyap.gov.tr)
+  - Vatandaş Portalı (vatandas.uyap.gov.tr)
+  - Menüden kolay portal değiştirme (Cmd/Ctrl+1, 2, 3)
+
+- **Uygulama Menüsü**
+  - Portal seçimi ve hızlı geçiş
+  - Asistan etkinleştir/durdur özelliği
+  - Kullanıcı bilgileri görüntüleme
+  - Ayarları sıfırlama
+
+- **Chrome Extension Uyumluluğu**
+  - Otomatik içerik enjeksiyonu
+  - Chrome API'lerinin Electron'a uyumlu hale getirilmesi
+  - `chrome.storage`, `chrome.runtime`, `chrome.tabs` API desteği
+  - İMEREK extension özelliklerinin çalışması için tam uyumluluk
+
+- **Veri Saklama**
+  - Kalıcı ayar ve kullanıcı verisi
+  - electron-store kullanarak güvenli depolama
+  - Chrome extension storage API uyumluluğu
 
 ## Kurulum
 
@@ -110,12 +127,17 @@ Tüm gerekli kütüphaneler ve stil dosyaları `src/extension/lib/` ve `src/exte
 - [x] Ana pencere ve portal yükleme
 - [x] Kütüphanelerin eklenmesi
 - [x] Kütüphane enjeksiyonlarının aktifleştirilmesi
+- [x] Uygulama menü sistemi eklendi
+  - [x] Portal seçimi (Avukat/Bilirkişi/Vatandaş)
+  - [x] Asistan etkinleştir/durdur
+  - [x] Kullanıcı bilgileri görüntüleme
+  - [x] Ayarları sıfırlama
+- [x] Chrome API'lerinin uyumlu hale getirilmesi
+  - [x] `chrome.storage.local` → `electron-store` ✅
+  - [x] `chrome.runtime.sendMessage` → IPC ✅
+  - [x] Chrome API uyumluluk katmanı oluşturuldu
+  - [ ] `chrome.identity` → OAuth implementasyonu (temel yapı hazır)
 - [ ] PDF.js ES modül yükleme düzeltilmesi
-- [ ] Popup UI'ının Electron'a adaptasyonu
-- [ ] Chrome API'lerinin tam uyumlu hale getirilmesi
-  - [ ] `chrome.storage.local` → `electron-store`
-  - [ ] `chrome.runtime.sendMessage` → IPC
-  - [ ] `chrome.identity` → OAuth implementasyonu
 - [ ] Asset yollarının düzeltilmesi (chrome-extension:// → yerel yol)
 - [ ] Google OAuth PKCE implementasyonu
 - [ ] Bilirkişi portalı için portal.js dosyasının eklenmesi
