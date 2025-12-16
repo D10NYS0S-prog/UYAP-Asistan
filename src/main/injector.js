@@ -67,7 +67,10 @@ function registerContentInjection(win) {
         // Load inject.js which contains all the IMEREK features
         await loadJS(win.webContents, 'portal/inject.js');
         
-        // Load main.js and portal.js for additional functionality
+        // Load main.css for İMEREK UI styles
+        await loadCSS(win.webContents, 'portal/main.css');
+        
+        // Load main.js and portal.js for additional functionality  
         await loadJS(win.webContents, 'portal/main.js');
         await loadJS(win.webContents, 'portal/portal.js');
         
