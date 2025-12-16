@@ -122,6 +122,120 @@ function createApplicationMenu(mainWindow, store) {
         },
         { type: 'separator' },
         {
+          label: 'İMEREK Özellikleri',
+          submenu: [
+            {
+              label: 'Dosya Ara',
+              accelerator: 'CmdOrCtrl+F',
+              click: async () => {
+                // Execute search dialog in the page
+                await mainWindow.webContents.executeJavaScript(`
+                  (function() {
+                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.openEvrakAra) {
+                      UYAP_EXT.DIALOG.openEvrakAra.default(null, [], 'search');
+                    } else {
+                      alert('Lütfen önce UYAP portalına giriş yapın ve bir dosya sayfasını yükleyin.');
+                    }
+                  })();
+                `).catch(err => {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'error',
+                    title: 'Hata',
+                    message: 'Dosya arama özelliği şu anda kullanılamıyor.\n\nLütfen UYAP portalına giriş yapın.',
+                    buttons: ['Tamam']
+                  });
+                });
+              }
+            },
+            {
+              label: 'Dosyalarım',
+              click: async () => {
+                await mainWindow.webContents.executeJavaScript(`
+                  (function() {
+                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.dosyalarim) {
+                      UYAP_EXT.DIALOG.dosyalarim.default();
+                    } else {
+                      alert('Lütfen önce UYAP portalına giriş yapın.');
+                    }
+                  })();
+                `).catch(err => {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'error',
+                    title: 'Hata',
+                    message: 'Dosyalarım özelliği şu anda kullanılamıyor.\n\nLütfen UYAP portalına giriş yapın.',
+                    buttons: ['Tamam']
+                  });
+                });
+              }
+            },
+            {
+              label: 'Yeni Evraklar',
+              click: async () => {
+                await mainWindow.webContents.executeJavaScript(`
+                  (function() {
+                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.yeniEvraklar) {
+                      UYAP_EXT.DIALOG.yeniEvraklar.default();
+                    } else {
+                      alert('Lütfen önce UYAP portalına giriş yapın.');
+                    }
+                  })();
+                `).catch(err => {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'error',
+                    title: 'Hata',
+                    message: 'Yeni Evraklar özelliği şu anda kullanılamıyor.\n\nLütfen UYAP portalına giriş yapın.',
+                    buttons: ['Tamam']
+                  });
+                });
+              }
+            },
+            {
+              label: 'Yerel Dosya Arşivi',
+              click: async () => {
+                await mainWindow.webContents.executeJavaScript(`
+                  (function() {
+                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.arsiv) {
+                      UYAP_EXT.DIALOG.arsiv.default();
+                    } else {
+                      alert('Lütfen önce UYAP portalına giriş yapın.');
+                    }
+                  })();
+                `).catch(err => {
+                  dialog.showMessageBox(mainWindow, {
+                    type: 'error',
+                    title: 'Hata',
+                    message: 'Yerel Dosya Arşivi özelliği şu anda kullanılamıyor.\n\nLütfen UYAP portalına giriş yapın.',
+                    buttons: ['Tamam']
+                  });
+                });
+              }
+            },
+            { type: 'separator' },
+            {
+              label: 'Tüm Özellikleri Göster',
+              click: () => {
+                dialog.showMessageBox(mainWindow, {
+                  type: 'info',
+                  title: 'İMEREK Özellikleri',
+                  message: 'İMEREK Asistan Özellikleri:\n\n' +
+                          '• Dosya Ara (Cmd/Ctrl+F)\n' +
+                          '• Dosyalarım\n' +
+                          '• Yeni Evraklar\n' +
+                          '• Yerel Dosya Arşivi\n' +
+                          '• Evrak Listesi (dosya sayfasında)\n' +
+                          '• Tebligat Listesi (dosya sayfasında)\n' +
+                          '• Not Al (dosya sayfasında)\n' +
+                          '• Notlar (dosya sayfasında)\n\n' +
+                          'Bazı özellikler UYAP portalına giriş yaptıktan\n' +
+                          've dosya sayfasına girdikten sonra kullanılabilir.',
+                  buttons: ['Tamam']
+                });
+              }
+            }
+          ]
+        },
+        { type: 'separator' },
+        {
           label: 'Ayarları Sıfırla',
           click: async () => {
             const response = await dialog.showMessageBox(mainWindow, {

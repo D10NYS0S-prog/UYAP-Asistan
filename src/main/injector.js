@@ -40,17 +40,43 @@ function registerContentInjection(win) {
         await loadCSS(win.webContents, 'lib/lightgallery/css/lightgallery-bundle.css');
         await loadCSS(win.webContents, 'portal/main.css');
         
-        // JS (order matters)
+        // JS (order matters) - Load ALL required libraries
         await loadJS(win.webContents, 'lib/jquery/jquery.min.js');
         await loadJS(win.webContents, 'lib/ua-parser-js/ua-parser.min.js');
         await loadJS(win.webContents, 'lib/xhook/xhook.js');
         await loadJS(win.webContents, 'lib/glightbox/glightbox.min.js');
+        await loadJS(win.webContents, 'lib/pdfmake/pdfmake.min.js');
+        await loadJS(win.webContents, 'lib/pdfmake/vfs_fonts.js');
+        await loadJS(win.webContents, 'lib/jodit/jodit.min.js');
+        await loadJS(win.webContents, 'lib/sumoselect/jquery.sumoselect.min.js');
+        await loadJS(win.webContents, 'lib/pdf-barcode/quagga.min.js');
+        await loadJS(win.webContents, 'lib/pdf-barcode/pdf-barcode.min.js');
+        await loadJS(win.webContents, 'lib/datatables/datatables.min.js');
+        await loadJS(win.webContents, 'lib/pnotify/core/PNotify.js');
+        await loadJS(win.webContents, 'lib/pnotify/animate/PNotifyAnimate.js');
+        await loadJS(win.webContents, 'lib/lightgallery/js/lightgallery.umd.js');
+        await loadJS(win.webContents, 'lib/lightgallery/js/lg-thumbnail.umd.js');
+        await loadJS(win.webContents, 'lib/lightgallery/js/lg-zoom.umd.js');
+        await loadJS(win.webContents, 'lib/lightgallery/js/lg-fullscreen.umd.js');
+        await loadJS(win.webContents, 'lib/lightgallery/js/lg-rotate.umd.js');
+        await loadJS(win.webContents, 'lib/jsstore/jsstore.min.js');
+        await loadJS(win.webContents, 'lib/jszip/jszip.min.js');
         // Note: lib/pdfjs/pdf.min.mjs is an ES module and needs special handling
         await loadJS(win.webContents, 'portal/startup.js');
         await loadJS(win.webContents, 'portal/main.js');
         await loadJS(win.webContents, 'portal/portal.js');
         
         console.log('Scripts injected successfully for avukatbeta');
+        
+        // Add debugging to check if UYAP_EXT is loaded
+        setTimeout(async () => {
+          const hasUyapExt = await win.webContents.executeJavaScript('typeof UYAP_EXT !== "undefined"');
+          console.log('UYAP_EXT loaded:', hasUyapExt);
+          if (hasUyapExt) {
+            const hasButtons = await win.webContents.executeJavaScript('typeof UYAP_EXT.TOOL !== "undefined" && typeof UYAP_EXT.TOOL.imerekButtons !== "undefined"');
+            console.log('IMEREK buttons available:', hasButtons);
+          }
+        }, 2000);
       } else if (/bilirkisi\.uyap\.gov\.tr/.test(url)) {
         console.log('Injecting scripts for bilirkisi portal...');
         
