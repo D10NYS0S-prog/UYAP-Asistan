@@ -77,6 +77,9 @@
         console.error('Runtime sendMessage error:', err);
         if (callback) callback({ success: false, error: err.message });
       });
+      
+      // Return true to indicate async callback
+      return true;
     },
 
     getURL: function(path) {
@@ -136,6 +139,23 @@
       });
       document.dispatchEvent(event);
     });
+  }
+
+  /**
+   * Auto-register this tab when on UYAP portal (after page loads)
+   */
+  if (window.location.hostname.includes('uyap.gov.tr')) {
+    // Wait a bit for page to fully load
+    setTimeout(() => {
+      window.chrome.runtime.sendMessage({
+        ask: 'tabsAdd',
+        class: 'main'
+      }, (response) => {
+        if (response && response.tabs) {
+          console.log('UYAP Asistan: Tab registered successfully');
+        }
+      });
+    }, 1000);
   }
 
   console.log('UYAP Asistan: Chrome API compatibility shim loaded');
