@@ -1,0 +1,60 @@
+{
+   "action": {
+      "default_popup": "/popup/popup.html",
+      "default_title": "İMEREK UYAP AVUKAT YARDIMCISI"
+   },
+   "background": {
+      "service_worker": "background.js"
+   },
+   "content_scripts": [ {
+      "css": [ "/lib/jodit/jodit.min.css", "/lib/glightbox/glightbox.min.css", "/lib/sumoselect/sumoselect.min.css", "/lib/datatables/datatables.min.css", "/lib/pnotify/core/PNotify.css", "/lib/pnotify/core/BrightTheme.css", "/lib/animatecss/animate.css", "/lib/lightgallery/css/lightgallery-bundle.css", "/portal/main.css" ],
+      "exclude_matches": [ "*://avukatbeta.uyap.gov.tr/giris*", "*://avukatbeta.uyap.gov.tr/edevletlogin*" ],
+      "js": [ "/lib/ua-parser-js/ua-parser.min.js", "/lib/glightbox/glightbox.min.js", "/portal/portal.js" ],
+      "matches": [ "*://avukatbeta.uyap.gov.tr/*" ],
+      "run_at": "document_idle"
+   }, {
+      "css": [ "/lib/jodit/jodit.min.css", "/lib/glightbox/glightbox.min.css", "/lib/sumoselect/sumoselect.min.css", "/lib/datatables/datatables.min.css", "/lib/pnotify/core/PNotify.css", "/lib/pnotify/core/BrightTheme.css", "/lib/animatecss/animate.css", "/lib/lightgallery/css/lightgallery-bundle.css", "/bilirkisi/main.css" ],
+      "exclude_matches": [ "*://bilirkisi.uyap.gov.tr/giris" ],
+      "js": [ "/lib/ua-parser-js/ua-parser.min.js", "/lib/glightbox/glightbox.min.js", "/bilirkisi/portal.js" ],
+      "matches": [ "*://bilirkisi.uyap.gov.tr/enabled" ],
+      "run_at": "document_idle"
+   }, {
+      "css": [ "/lib/glightbox/glightbox.min.css", "/lib/sumoselect/sumoselect.min.css", "/lib/font-awesome/fontawesome.css", "/lib/font-awesome/solid.css", "/vatandas/vatandas.css" ],
+      "js": [ "/vatandas/uyap_vatandas.js" ],
+      "matches": [ "*://vatandas.uyap.gov.tr/main/jsp/vatandas/index.jsp*" ],
+      "run_at": "document_idle"
+   } ],
+   "description": "UYAP Avukat Portalınızı daha etkin ve verimli kullanın...",
+   "homepage_url": "https://uyap.imerek.com",
+   "host_permissions": [ "*://*.imerek.com/*", "*://*.ptt.gov.tr/*", "*://localhost/*" ],
+   "icons": {
+      "128": "style/img/icons/icon128.png",
+      "16": "style/img/icons/icon16.png",
+      "24": "style/img/icons/icon24.png",
+      "32": "style/img/icons/icon32.png",
+      "48": "style/img/icons/icon48.png"
+   },
+   "incognito": "spanning",
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlMP0GXRJxlKufHGd/Y4yosLwMHt3p5xE+DvLiEy9+L0PTmk16rJ9P41rUI189yKZISPO9RLfvEbWztK3fTTPVUSSMxNNKSDpQfKsMa7/9c5JTzMyvBnaEl2Q9iovoqlNw32inbS9X87OCF8Tt0HN+1onNvVLVhzjO6cDtVxF27tHP9fIhpJ3XSxj9ZFM05NhnlnB0qi+s9uFR/oZrnWWyALm9wfnQVlkqGv+HcTpcOF44P/k413s8uMoVGP+nCpOeHl3O7EnbhvWiEfv+4cETSwLGGJEbuQLykAOcBn6paKxg5q7iBq8JZmNwAmkHLZBQZgw6lz30qVwtOmkiLkhSQIDAQAB",
+   "manifest_version": 3,
+   "name": "İMEREK UYAP AVUKAT YARDIMCISI",
+   "oauth2": {
+      "client_id": "696512857459-sbni5e87dc9gpedv9rtfi4nhhaeua1mk.apps.googleusercontent.com",
+      "scopes": [ "https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/drive.appdata", "https://www.googleapis.com/auth/tasks" ]
+   },
+   "offline_enabled": true,
+   "permissions": [ "contextMenus", "contentSettings", "downloads", "identity", "unlimitedStorage", "storage", "tabs" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "3.5.5",
+   "version_name": "3.5.5",
+   "web_accessible_resources": [ {
+      "matches": [ "*://avukatbeta.uyap.gov.tr/*" ],
+      "resources": [ "/lib/jodit/*", "/lib/ua-parser-js/ua-parser.min.js", "/lib/jquery/jquery.min.js", "/lib/xhook/xhook.js", "/lib/pdfjs/pdf.min.mjs", "/lib/pdfmake/vfs_fonts.js", "/lib/pdfmake/pdfmake.min.js", "/lib/pdfjs/pdf.worker.min.mjs", "/lib/pdf-barcode/pdf-barcode.min.js", "/lib/pdf-barcode/quagga.min.js", "/lib/jsstore/*", "/portal/startup.js", "/portal/main.js", "/style/img/*", "/style/fonts/*", "/lib/jszip/jszip.min.js", "/lib/glightbox/glightbox.min.js", "/lib/sumoselect/jquery.sumoselect.min.js", "/lib/datatables/*", "/lib/pnotify/core/PNotify.js", "/lib/pnotify/animate/PNotifyAnimate.js", "/lib/lightgallery/*" ]
+   }, {
+      "matches": [ "*://bilirkisi.uyap.gov.tr/*" ],
+      "resources": [  ]
+   }, {
+      "matches": [ "*://vatandas.uyap.gov.tr/*" ],
+      "resources": [ "/lib/ua-parser-js/ua-parser.min.js", "/lib/pdfmake/pdfmake.min.js", "/vatandas/inject.js", "/vatandas/xhook.js", "/lib/glightbox/glightbox.min.js", "/style/img/*", "/style/fonts/*", "/lib/sumoselect/jquery.sumoselect.min.js", "/lib/font-awesome/webfonts/*" ]
+   } ]
+}
