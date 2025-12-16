@@ -63,6 +63,11 @@ function registerContentInjection(win) {
         await loadJS(win.webContents, 'lib/jszip/jszip.min.js');
         // Note: lib/pdfjs/pdf.min.mjs is an ES module and needs special handling
         await loadJS(win.webContents, 'portal/startup.js');
+        
+        // Load inject.js which contains all the IMEREK features
+        await loadJS(win.webContents, 'portal/inject.js');
+        
+        // Load main.js and portal.js for additional functionality
         await loadJS(win.webContents, 'portal/main.js');
         await loadJS(win.webContents, 'portal/portal.js');
         
@@ -75,6 +80,8 @@ function registerContentInjection(win) {
           if (hasUyapExt) {
             const hasButtons = await win.webContents.executeJavaScript('typeof UYAP_EXT.TOOL !== "undefined" && typeof UYAP_EXT.TOOL.imerekButtons !== "undefined"');
             console.log('IMEREK buttons available:', hasButtons);
+            const hasDialogs = await win.webContents.executeJavaScript('Object.keys(UYAP_EXT.DIALOG || {})');
+            console.log('Available DIALOG methods:', hasDialogs);
           }
         }, 2000);
       } else if (/bilirkisi\.uyap\.gov\.tr/.test(url)) {
