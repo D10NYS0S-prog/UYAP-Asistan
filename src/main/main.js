@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { registerContentInjection } = require('./injector');
+const { createApplicationMenu } = require('./menu');
+const { store, chromeStorage } = require('./storage');
 
 let mainWindow;
 
@@ -32,6 +34,9 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+  // Create application menu
+  createApplicationMenu(mainWindow, store);
 }
 
 // App lifecycle
@@ -53,12 +58,11 @@ app.on('window-all-closed', () => {
 
 // IPC handlers for Chrome extension API compatibility
 ipcMain.handle('storage-get', async (event, keys) => {
-  // TODO: Implement storage using electron-store or similar
-  return {};
+  return await chromeStorage.get(keys);
 });
 
 ipcMain.handle('storage-set', async (event, items) => {
-  // TODO: Implement storage using electron-store or similar
+  await chromeStorage.set(items);
   return true;
 });
 
