@@ -179,177 +179,24 @@ function createApplicationMenu(mainWindow, store) {
                 }
               }
             },
-            {
-              label: 'Dosyalarım',
-              click: async () => {
-                const url = mainWindow.webContents.getURL();
-                const activeUser = store.get('active_user', null);
-                
-                if (!/avukatbeta\.uyap\.gov\.tr/.test(url)) {
-                  dialog.showMessageBox(mainWindow, {
-                    type: 'warning',
-                    title: 'Uyarı',
-                    message: 'Bu özelliği kullanmak için UYAP Avukat Portalına gitmelisiniz.',
-                    buttons: ['Tamam']
-                  });
-                  return;
-                }
-                
-                if (!activeUser) {
-                  dialog.showMessageBox(mainWindow, {
-                    type: 'warning',
-                    title: 'Giriş Gerekli',
-                    message: 'Bu özelliği kullanmak için önce UYAP portalına giriş yapmalısınız.',
-                    buttons: ['Tamam']
-                  });
-                  return;
-                }
-                
-                const result = await mainWindow.webContents.executeJavaScript(`
-                  (function() {
-                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.dosyalarim) {
-                      try {
-                        UYAP_EXT.DIALOG.dosyalarim.default();
-                        return { success: true };
-                      } catch (e) {
-                        return { success: false, error: e.message };
-                      }
-                    } else {
-                      return { success: false, error: 'UYAP_EXT not loaded' };
-                    }
-                  })();
-                `).catch(err => ({ success: false, error: err.message }));
-                
-                if (!result.success) {
-                  dialog.showMessageBox(mainWindow, {
-                    type: 'info',
-                    title: 'Bilgi',
-                    message: 'Dosyalarım özelliği henüz yüklenmedi.\n\nSayfayı yenileyin ve tekrar deneyin.',
-                    buttons: ['Tamam']
-                  });
-                }
-              }
-            },
-            {
-              label: 'Yeni Evraklar',
-              click: async () => {
-                const url = mainWindow.webContents.getURL();
-                const activeUser = store.get('active_user', null);
-                
-                if (!/avukatbeta\.uyap\.gov\.tr/.test(url)) {
-                  dialog.showMessageBox(mainWindow, {
-                    type: 'warning',
-                    title: 'Uyarı',
-                    message: 'Bu özelliği kullanmak için UYAP Avukat Portalına gitmelisiniz.',
-                    buttons: ['Tamam']
-                  });
-                  return;
-                }
-                
-                if (!activeUser) {
-                  dialog.showMessageBox(mainWindow, {
-                    type: 'warning',
-                    title: 'Giriş Gerekli',
-                    message: 'Bu özelliği kullanmak için önce UYAP portalına giriş yapmalısınız.',
-                    buttons: ['Tamam']
-                  });
-                  return;
-                }
-                
-                const result = await mainWindow.webContents.executeJavaScript(`
-                  (function() {
-                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.yeniEvraklar) {
-                      try {
-                        UYAP_EXT.DIALOG.yeniEvraklar.default();
-                        return { success: true };
-                      } catch (e) {
-                        return { success: false, error: e.message };
-                      }
-                    } else {
-                      return { success: false, error: 'UYAP_EXT not loaded' };
-                    }
-                  })();
-                `).catch(err => ({ success: false, error: err.message }));
-                
-                if (!result.success) {
-                  dialog.showMessageBox(mainWindow, {
-                    type: 'info',
-                    title: 'Bilgi',
-                    message: 'Yeni Evraklar özelliği henüz yüklenmedi.\n\nSayfayı yenileyin ve tekrar deneyin.',
-                    buttons: ['Tamam']
-                  });
-                }
-              }
-            },
-            {
-              label: 'Yerel Dosya Arşivi',
-              click: async () => {
-                const url = mainWindow.webContents.getURL();
-                const activeUser = store.get('active_user', null);
-                
-                if (!/avukatbeta\.uyap\.gov\.tr/.test(url)) {
-                  dialog.showMessageBox(mainWindow, {
-                    type: 'warning',
-                    title: 'Uyarı',
-                    message: 'Bu özelliği kullanmak için UYAP Avukat Portalına gitmelisiniz.',
-                    buttons: ['Tamam']
-                  });
-                  return;
-                }
-                
-                if (!activeUser) {
-                  dialog.showMessageBox(mainWindow, {
-                    type: 'warning',
-                    title: 'Giriş Gerekli',
-                    message: 'Bu özelliği kullanmak için önce UYAP portalına giriş yapmalısınız.',
-                    buttons: ['Tamam']
-                  });
-                  return;
-                }
-                
-                const result = await mainWindow.webContents.executeJavaScript(`
-                  (function() {
-                    if (typeof UYAP_EXT !== 'undefined' && UYAP_EXT.DIALOG && UYAP_EXT.DIALOG.arsiv) {
-                      try {
-                        UYAP_EXT.DIALOG.arsiv.default();
-                        return { success: true };
-                      } catch (e) {
-                        return { success: false, error: e.message };
-                      }
-                    } else {
-                      return { success: false, error: 'UYAP_EXT not loaded' };
-                    }
-                  })();
-                `).catch(err => ({ success: false, error: err.message }));
-                
-                if (!result.success) {
-                  dialog.showMessageBox(mainWindow, {
-                    type: 'info',
-                    title: 'Bilgi',
-                    message: 'Yerel Dosya Arşivi özelliği henüz yüklenmedi.\n\nSayfayı yenileyin ve tekrar deneyin.',
-                    buttons: ['Tamam']
-                  });
-                }
-              }
-            },
             { type: 'separator' },
             {
-              label: 'Tüm Özellikleri Göster',
+              label: 'Mevcut Özellikler',
               click: () => {
                 dialog.showMessageBox(mainWindow, {
                   type: 'info',
                   title: 'İMEREK Özellikleri',
-                  message: 'İMEREK Asistan Özellikleri:\n\n' +
-                          '• Dosya Ara (Cmd/Ctrl+F)\n' +
-                          '• Dosyalarım\n' +
-                          '• Yeni Evraklar\n' +
-                          '• Yerel Dosya Arşivi\n' +
-                          '• Evrak Listesi (dosya sayfasında)\n' +
-                          '• Tebligat Listesi (dosya sayfasında)\n' +
-                          '• Not Al (dosya sayfasında)\n' +
-                          '• Notlar (dosya sayfasında)\n\n' +
-                          'Bazı özellikler UYAP portalına giriş yaptıktan\n' +
-                          've dosya sayfasına girdikten sonra kullanılabilir.',
+                  message: 'UYAP Asistan Özellikleri:\n\n' +
+                          '📋 Dosya Ara (Cmd/Ctrl+F)\n' +
+                          '   • Dosya ve evrak arama\n\n' +
+                          'Dosya Sayfasındaki Butonlar:\n' +
+                          '• Evrak Listesi (📄)\n' +
+                          '• Tebligat Listesi (✉️)\n' +
+                          '• Not Al (📝)\n' +
+                          '• Notlar (📑)\n\n' +
+                          'Bu butonlar dosya detay sayfasına\n' +
+                          'girdiğinizde otomatik görünür.\n\n' +
+                          'Not: Giriş yapın ve bir dosya açın.',
                   buttons: ['Tamam']
                 });
               }
