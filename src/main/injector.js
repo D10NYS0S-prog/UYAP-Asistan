@@ -78,6 +78,16 @@ function registerContentInjection(win) {
         try {
           await loadJS(win.webContents, 'portal/popup-injector.js');
           console.log('popup-injector.js loaded successfully');
+          
+          // Add a verification check after 2 seconds
+          setTimeout(async () => {
+            const popupExists = await win.webContents.executeJavaScript('!!document.getElementById("imerek-popup-sidebar")');
+            console.log('İMEREK popup sidebar exists:', popupExists);
+            if (!popupExists) {
+              console.log('Popup not found, attempting to re-inject...');
+              await loadJS(win.webContents, 'portal/popup-injector.js');
+            }
+          }, 2000);
         } catch (error) {
           console.error('Error loading popup-injector.js:', error);
         }

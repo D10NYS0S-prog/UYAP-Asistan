@@ -1,25 +1,18 @@
 // Popup Injector - Injects İMEREK popup as a sidebar into UYAP portal pages
-console.log('=== İMEREK POPUP INJECTOR SCRIPT EXECUTING ===');
-
 (function() {
     'use strict';
     
-    console.log('İMEREK Popup Injector: Script loaded at', new Date().toLocaleTimeString());
-    console.log('İMEREK Popup Injector: Current URL:', window.location.href);
-    console.log('İMEREK Popup Injector: Document ready state:', document.readyState);
-    
+    // Immediate execution - inject as soon as possible
     function injectPopup() {
-        try {
-            console.log('İMEREK Popup Injector: injectPopup() called');
-            console.log('İMEREK Popup Injector: document.body exists:', !!document.body);
-            
-            // Check if popup already injected
-            if (document.getElementById('imerek-popup-sidebar')) {
-                console.log('İMEREK Popup Injector: Popup already exists');
-                return;
-            }
-            
-            console.log('İMEREK Popup Injector: Injecting popup sidebar...');
+        // Check if popup already injected
+        if (document.getElementById('imerek-popup-sidebar')) {
+            return;
+        }
+        
+        if (!document.body) {
+            setTimeout(injectPopup, 50);
+            return;
+        }
     
     // Create popup HTML structure
     const popupHTML = `
@@ -374,56 +367,8 @@ console.log('=== İMEREK POPUP INJECTOR SCRIPT EXECUTING ===');
             }
         });
     });
-    
-            console.log('İMEREK Popup Injector: Popup sidebar injected successfully');
-            console.log('İMEREK Popup Injector: Toggle button element:', toggle);
-            console.log('İMEREK Popup Injector: Sidebar element:', sidebar);
-            console.log('İMEREK Popup Injector: Toggle button should be visible on the right side');
-            
-            // Final verification
-            setTimeout(() => {
-                const verifyToggle = document.getElementById('imerek-popup-toggle');
-                const verifySidebar = document.getElementById('imerek-popup-sidebar');
-                console.log('İMEREK Popup Injector: Verification after 500ms:');
-                console.log('  - Sidebar exists:', !!verifySidebar);
-                console.log('  - Toggle exists:', !!verifyToggle);
-                if (verifyToggle) {
-                    const rect = verifyToggle.getBoundingClientRect();
-                    console.log('  - Toggle position:', {
-                        top: rect.top,
-                        right: rect.right,
-                        width: rect.width,
-                        height: rect.height
-                    });
-                    console.log('  - Toggle visible:', rect.width > 0 && rect.height > 0);
-                }
-            }, 500);
-        } catch (error) {
-            console.error('İMEREK Popup Injector: Error during injection:', error);
-            console.error('İMEREK Popup Injector: Error stack:', error.stack);
-        }
     }
     
-    // Wait for DOM to be ready and body to exist
-    function waitAndInject() {
-        if (document.body) {
-            console.log('İMEREK Popup Injector: document.body is available, injecting now');
-            injectPopup();
-        } else {
-            console.log('İMEREK Popup Injector: document.body not yet available, waiting...');
-            setTimeout(waitAndInject, 100);
-        }
-    }
-    
-    // Wait for DOM to be ready
-    if (document.readyState === 'loading') {
-        console.log('İMEREK Popup Injector: Document is still loading, waiting for DOMContentLoaded...');
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('İMEREK Popup Injector: DOMContentLoaded fired');
-            waitAndInject();
-        });
-    } else {
-        console.log('İMEREK Popup Injector: Document already loaded, proceeding immediately');
-        waitAndInject();
-    }
+    // Start injection immediately
+    injectPopup();
 })();
