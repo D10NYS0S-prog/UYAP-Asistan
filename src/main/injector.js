@@ -74,20 +74,39 @@ function registerContentInjection(win) {
         await loadJS(win.webContents, 'portal/main.js');
         await loadJS(win.webContents, 'portal/portal.js');
         
-        // Load popup injector to add İMEREK sidebar
+        // Load popup injector - inject directly into page context with persistence
         try {
-          await loadJS(win.webContents, 'portal/popup-injector.js');
-          console.log('popup-injector.js loaded successfully');
+          const popupInjectorCode = await loadText('portal/popup-injector.js');
           
-          // Add a verification check after 2 seconds
-          setTimeout(async () => {
-            const popupExists = await win.webContents.executeJavaScript('!!document.getElementById("imerek-popup-sidebar")');
-            console.log('İMEREK popup sidebar exists:', popupExists);
-            if (!popupExists) {
-              console.log('Popup not found, attempting to re-inject...');
-              await loadJS(win.webContents, 'portal/popup-injector.js');
-            }
-          }, 2000);
+          // Execute in page context with enhanced error handling
+          await win.webContents.executeJavaScript(`
+            (function() {
+              try {
+                ${popupInjectorCode}
+                
+                // Add persistence with MutationObserver
+                const observer = new MutationObserver((mutations) => {
+                  if (!document.getElementById('imerek-popup-sidebar')) {
+                    console.log('İMEREK popup removed, re-injecting...');
+                    ${popupInjectorCode}
+                  }
+                });
+                
+                observer.observe(document.body, {
+                  childList: true,
+                  subtree: true
+                });
+                
+                console.log('İMEREK popup injector loaded with persistence');
+                return true;
+              } catch (err) {
+                console.error('İMEREK popup injection failed:', err);
+                return false;
+              }
+            })();
+          `);
+          
+          console.log('popup-injector.js executed with persistence');
         } catch (error) {
           console.error('Error loading popup-injector.js:', error);
         }
