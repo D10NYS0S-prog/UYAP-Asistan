@@ -1,18 +1,28 @@
 // Popup Injector - Injects İMEREK popup as a sidebar into UYAP portal pages
+console.log('=== İMEREK POPUP INJECTOR: SCRIPT FILE LOADED ===');
+
 (function() {
     'use strict';
     
+    console.log('İMEREK Popup Injector: IIFE executing');
+    
     // Immediate execution - inject as soon as possible
     function injectPopup() {
+        console.log('İMEREK Popup Injector: injectPopup() called');
+        
         // Check if popup already injected
         if (document.getElementById('imerek-popup-sidebar')) {
+            console.log('İMEREK Popup Injector: Popup already exists, skipping');
             return;
         }
         
         if (!document.body) {
+            console.log('İMEREK Popup Injector: document.body not ready, retrying in 50ms');
             setTimeout(injectPopup, 50);
             return;
         }
+        
+        console.log('İMEREK Popup Injector: Starting injection...');
     
     // Create popup HTML structure
     const popupHTML = `
@@ -80,10 +90,13 @@
         </div>
     `;
     
+    console.log('İMEREK Popup Injector: Creating popup container');
     // Inject popup HTML
     const popupContainer = document.createElement('div');
     popupContainer.innerHTML = popupHTML;
+    console.log('İMEREK Popup Injector: Appending popup to body');
     document.body.appendChild(popupContainer.firstElementChild);
+    console.log('İMEREK Popup Injector: Popup HTML appended successfully!');
     
     // Inject popup CSS
     const popupCSS = `
@@ -265,18 +278,29 @@
         }
     `;
     
+    console.log('İMEREK Popup Injector: Appending style element');
     const styleElement = document.createElement('style');
     styleElement.textContent = popupCSS;
     document.head.appendChild(styleElement);
+    console.log('İMEREK Popup Injector: Style element appended');
     
+    console.log('İMEREK Popup Injector: Setting up event listeners');
     // Popup functionality
     const sidebar = document.getElementById('imerek-popup-sidebar');
     const toggle = document.getElementById('imerek-popup-toggle');
     const closeBtn = document.getElementById('imerek-popup-close');
     const content = document.getElementById('imerek-popup-content');
     
+    console.log('İMEREK Popup Injector: Elements found -', {
+        sidebar: !!sidebar,
+        toggle: !!toggle,
+        closeBtn: !!closeBtn,
+        content: !!content
+    });
+    
     // Toggle sidebar
     toggle.addEventListener('click', function() {
+        console.log('İMEREK Popup Injector: Toggle button clicked');
         sidebar.classList.toggle('open');
         if (sidebar.classList.contains('open')) {
             loadPopupData();
@@ -370,5 +394,9 @@
     }
     
     // Start injection immediately
+    console.log('İMEREK Popup Injector: Calling injectPopup() to start...');
     injectPopup();
+    console.log('İMEREK Popup Injector: IIFE completed');
 })();
+
+console.log('=== İMEREK POPUP INJECTOR: SCRIPT FILE EXECUTION COMPLETE ===');
