@@ -1,4 +1,6 @@
 // Popup Injector - Injects İMEREK popup as a sidebar into UYAP portal pages
+console.log('=== İMEREK POPUP INJECTOR SCRIPT EXECUTING ===');
+
 (function() {
     'use strict';
     
