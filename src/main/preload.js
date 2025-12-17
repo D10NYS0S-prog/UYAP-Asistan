@@ -17,5 +17,12 @@ contextBridge.exposeInMainWorld('bridge', {
   // OAuth API (chrome.identity equivalent)
   oauth: {
     getToken: () => ipcRenderer.invoke('oauth-getToken')
+  },
+
+  // Extension status listener
+  onExtensionStatusChanged: (callback) => {
+    ipcRenderer.on('extension-status-changed', (event, isEnabled) => {
+      callback(isEnabled);
+    });
   }
 });
